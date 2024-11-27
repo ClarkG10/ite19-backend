@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Http\Controllers\api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Sale;
+use Illuminate\Http\Request;
+
+class SalesController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $sale = Sale::all();
+
+        return response()->json($sale);
+    }
+
+    public function storeSaleIndex(Request $request)
+    {
+        if (!$request->user()) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        $userId = $request->user()->id;
+
+        $sale = Sale::where('store_id', $userId)->get();
+
+        return response()->json($sale);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'quantity' => 'required|integer',
+            'price' => 'required|integer',
+            'total_amount' => 'required|integer',
+            'payment_method' => 'required|string',
+            'store_id' => 'required|integer',
+            'product_id' => 'required|integer',
+            'customer_id' => 'required|integer',
+        ]);
+
+        $sale = Sale::create($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sale created successfully.',
+            'data' => $sale
+        ], 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $sale = Sale::find($id);
+
+        if (!$sale) {
+            return response()->json(['error' => 'Sale not found'], 404);
+        }
+
+        return response()->json($sale);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $sale = Sale::find($id);
+
+        if (!$sale) {
+            return response()->json(['error' => 'Sale not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'quantity' => 'required|integer',
+            'price' => 'required|integer',
+            'total_amount' => 'required|integer',
+            'payment_method' => 'required|string',
+            'product_id' => 'required|integer',
+            'customer_id' => 'required|integer',
+        ]);
+
+        $sale->update($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sale updated successfully.',
+            'data' => $sale
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $sale = Sale::find($id);
+
+        if (!$sale) {
+            return response()->json(['error' => 'Sale not found'], 404);
+        }
+
+        $sale->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sale deleted successfully.'
+        ]);
+    }
+}

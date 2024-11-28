@@ -20,13 +20,16 @@ class SalesController extends Controller
 
     public function storeSaleIndex(Request $request)
     {
+        $userId = $request->user()->id;
+
         if (!$request->user()) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $userId = $request->user()->id;
+        $perPage = $request->query('per_page', 10);
 
-        $sale = Sale::where('store_id', $userId)->get();
+        $sale = Sale::where('store_id', $userId)
+            ->paginate($perPage);
 
         return response()->json($sale);
     }
@@ -60,7 +63,7 @@ class SalesController extends Controller
      */
     public function show(string $id)
     {
-        $sale = Sale::find($id);
+        $sale = Sale::findOrFail($id);
 
         if (!$sale) {
             return response()->json(['error' => 'Sale not found'], 404);
@@ -74,7 +77,7 @@ class SalesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $sale = Sale::find($id);
+        $sale = Sale::findOrFail($id);
 
         if (!$sale) {
             return response()->json(['error' => 'Sale not found'], 404);
@@ -103,7 +106,7 @@ class SalesController extends Controller
      */
     public function destroy(string $id)
     {
-        $sale = Sale::find($id);
+        $sale = Sale::findOrFail($id);
 
         if (!$sale) {
             return response()->json(['error' => 'Sale not found'], 404);

@@ -58,7 +58,7 @@ class StoreCartController extends Controller
      */
     public function show(string $id)
     {
-        $storecart = StoreCart::find($id);
+        $storecart = StoreCart::findOrFail($id);
 
         if (!$storecart) {
             return response()->json(['error' => 'Store cart not found'], 404);
@@ -72,7 +72,7 @@ class StoreCartController extends Controller
      */
     public function updateQuantity(Request $request, string $id)
     {
-        $storecart = StoreCart::find($id);
+        $storecart = StoreCart::findOrFail($id);
 
         if (!$storecart) {
             return response()->json(['error' => 'Cart item not found'], 404);

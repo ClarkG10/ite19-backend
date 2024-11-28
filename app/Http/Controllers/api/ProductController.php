@@ -21,15 +21,18 @@ class ProductController extends Controller
 
     public function vendorProductIndex(Request $request)
     {
+        $userId = $request->user()->id;
+
         if (!$request->user()) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $userId = $request->user()->id;
+        $perPage = $request->query('per_page', 10);
 
-        $inventory = Product::where('vendor_id', $userId)->get();
+        $product = Product::where('store_id', $userId)
+            ->paginate($perPage);
 
-        return response()->json($inventory);
+        return response()->json($product);
     }
 
     /**
@@ -71,7 +74,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
@@ -123,7 +126,7 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);

@@ -20,20 +20,24 @@ class ReorderRequestController extends Controller
 
     public function userReorderIndex(Request $request)
     {
-        if (!$request->user()) {
-            return response()->json(['error' => 'User not authenticated'], 401);
-        }
         $userId = $request->user()->id;
 
-        $query = ReorderRequest::where(function ($query) use ($userId) {
+        if (!$userId) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        $perPage = $request->query('per_page', 10);
+
+        $reorderRequest = ReorderRequest::where(function ($query) use ($userId) {
             $query->where('vendor_id', $userId)
                 ->orWhere('store_id', $userId);
-        })->orderBy('created_at', 'desc');
-
-        $reorderRequest = $query->get();
+        })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
 
         return response()->json($reorderRequest);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -64,7 +68,7 @@ class ReorderRequestController extends Controller
      */
     public function show(string $id)
     {
-        $reorderRequest = ReorderRequest::find($id);
+        $reorderRequest = ReorderRequest::findOrFail($id);
 
         if (!$reorderRequest) {
             return response()->json(['error' => 'Reorder request not found'], 404);
@@ -78,7 +82,7 @@ class ReorderRequestController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $reorderRequest = ReorderRequest::find($id);
+        $reorderRequest = ReorderRequest::findOrFail($id);
 
         if (!$reorderRequest) {
             return response()->json(['error' => 'Reorder request not found'], 404);
@@ -107,7 +111,7 @@ class ReorderRequestController extends Controller
      */
     public function destroy(string $id)
     {
-        $reorderRequest = ReorderRequest::find($id);
+        $reorderRequest = ReorderRequest::findOrFail($id);
 
         if (!$reorderRequest) {
             return response()->json(['error' => 'Reorder request not found'], 404);

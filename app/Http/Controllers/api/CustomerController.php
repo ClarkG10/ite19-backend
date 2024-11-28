@@ -43,13 +43,21 @@ class CustomerController extends Controller
 
     public function updateCustomerAccount(Request $request, string $id)
     {
-
         $customer = Customer::findOrFail($id);
 
-        // Retrieve the validated input data...
-        $validated = $request->validated();
+        if (!$customer) {
+            return response()->json(['error' => 'Inventory not found'], 404);
+        }
 
-        $customer->update($validated);
+        $validatedData = $request->validate([
+            'email' => 'required|string|email|unique:App\Models\Customer',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'phone_number' => 'required|integer',
+            'address' => 'required|string',
+        ]);
+
+        $customer->update($validatedData);
 
         return $customer;
     }
@@ -57,32 +65,17 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateCustomerName(Request $request, string $id)
-    {
-
-        $customer = Customer::findOrFail($id);
-
-        // Retrieve the validated input data...
-        $validated = $request->validated();
-
-        $customer->name =  $validated['name'];
-
-        $customer->save();
-
-        return $customer;
-    }
-
     /**
      * Update the email of the specified resource in storage.
      */
-    public function email(Request $request, string $id)
+    public function isFrequentShopper(Request $request, string $id)
     {
         $customer = Customer::findOrFail($id);
 
         // Retrieve the validated input data...
         $validated = $request->validated();
 
-        $customer->email =  $validated['email'];
+        $customer->email =  $validated['is_frequent_shopper'];
 
         $customer->save();
 

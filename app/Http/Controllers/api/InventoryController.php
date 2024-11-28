@@ -20,16 +20,24 @@ class InventoryController extends Controller
 
     public function storeInventoryIndex(Request $request)
     {
-        if (!$request->user()) {
+        $userId = $request->user()->id;
+
+        if (!$userId) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $userId = $request->user()->id;
+        $perPage = $request->query('per_page', 10);
 
-        $inventory = Inventory::where('store_id', $userId)->get();
+        $inventory = Inventory::where('store_id', $userId)
+            ->paginate($perPage);
+
+        if ($inventory->isEmpty()) {
+            return response()->json(['message' => 'No inventory found'], 404);
+        }
 
         return response()->json($inventory);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -72,7 +80,7 @@ class InventoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $inventory = Inventory::find($id);
+        $inventory = Inventory::findOrFail($id);
 
         if (!$inventory) {
             return response()->json(['error' => 'Inventory not found'], 404);

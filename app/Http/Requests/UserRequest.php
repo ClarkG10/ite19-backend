@@ -40,13 +40,26 @@ class UserRequest extends FormRequest
                 'zipcode' => 'required|integer',
                 'operating_hours' => 'required|string',
             ];
-        } else if (request()->routeIs('user.email')) {
+        } else if (request()->routeIs('user.update')) {
             return [
-                'email' => 'required|string|email|max:255',
+                'email' => 'required|string|email|unique:App\Models\User',
+                'business_type' => 'required|string|max:255',
+                'business_name' => 'required|string|max:255',
+                'business_number' => 'required|string|max:255',
+                'phone_number' => 'required|integer|min:10',
+                'business_address' => 'required|string|max:255',
+                'city' => 'required|string',
+                'country' => 'required|string',
+                'zipcode' => 'required|integer',
+                'operating_hours' => 'required|string',
             ];
         } else if (request()->routeIs('user.password')) {
             return [
                 'password' => 'required|confirmed|min:8',
+            ];
+        } else if (request()->routeIs('user.isFrequentShopper')) {
+            return [
+                'is_frequent_shopper' => 'required|boolean',
             ];
         }
     }

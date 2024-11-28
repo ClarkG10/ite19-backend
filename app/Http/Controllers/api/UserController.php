@@ -38,23 +38,20 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        return User::FindOrFail($id);
+        return User::findOrFail($id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateUserAccount(Request $request, string $id)
     {
-
         $user = User::findOrFail($id);
 
         // Retrieve the validated input data...
         $validated = $request->validated();
 
-        $user->name =  $validated['name'];
-
-        $user->save();
+        $user->update($validated);
 
         return $user;
     }
@@ -98,7 +95,7 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = User::FindOrFail($id);
+        $user = User::findOrFail($id);
 
         $user->delete();
 

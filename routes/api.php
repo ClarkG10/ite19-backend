@@ -71,7 +71,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/user/reorder-request',         'userReorderIndex');
         Route::post('/reorder-request',             'store');
         Route::get('/reorder-request/{id}',         'show');
-        Route::put('/reorder-request/{id}',         'update');
+        Route::put('/reorder-request/{id}',            'update');
+        Route::put('/reorder-quantity/{id}',        'updateQuantity');
         Route::delete('/reorder-request/{id}',      'destroy');
     });
 

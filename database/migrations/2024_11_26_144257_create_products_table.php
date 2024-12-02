@@ -17,8 +17,12 @@ return new class extends Migration
             $table->string('product_name');
             $table->string('product_type');
             $table->text('image_path');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->decimal('default_price', 10, 2);
+            $table->decimal('selling_price', 10, 2);
+            $table->decimal('cost_price', 10, 2);
+            $table->integer('stock_quantity');
+            $table->string('status')->default('Available');
             $table->boolean('is_active')->default(true);
             $table->unsignedBigInteger('vendor_id');
             $table->foreign('vendor_id')->references('id')->on('users');

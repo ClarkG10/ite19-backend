@@ -47,8 +47,8 @@ class ReorderRequestController extends Controller
         $validatedData = $request->validate([
             'quantity' => 'required|integer',
             'status' => 'required|string',
-            'shipped_date' => 'required|date',
-            'delivered_date' => 'required|date',
+            'shipped_date' => 'nullable|date',
+            'delivered_date' => 'nullable|date',
             'store_id' => 'required|integer',
             'vendor_id' => 'required|integer',
             'product_id' => 'required|integer',
@@ -80,7 +80,7 @@ class ReorderRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateQuantity(Request $request, string $id)
     {
         $reorderRequest = ReorderRequest::findOrFail($id);
 
@@ -90,11 +90,29 @@ class ReorderRequestController extends Controller
 
         $validatedData = $request->validate([
             'quantity' => 'nullable|integer',
+        ]);
+
+        $reorderRequest->update($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reorder request updated successfully.',
+            'data' => $reorderRequest
+        ], 200);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $reorderRequest = ReorderRequest::findOrFail($id);
+
+        if (!$reorderRequest) {
+            return response()->json(['error' => 'Reorder request not found'], 404);
+        }
+
+        $validatedData = $request->validate([
             'status' => 'string',
             'shipped_date' => 'nullable|date',
             'delivered_date' => 'nullable|date',
-            'vendor_id' => 'nullable|integer',
-            'product_id' => 'nullable|integer',
         ]);
 
         $reorderRequest->update($validatedData);

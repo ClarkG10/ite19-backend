@@ -16,23 +16,14 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->decimal('total_amount', 10, 2);
-            $table->integer('payment_method')->default('Cash On Delivery');
-            $table->timestamps();
-        });
-
-        Schema::create('sales', function ($table) {
+            $table->string('payment_method')->default('Cash on Delivery');
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('customer_id')->on('customers');
-        });
-
-        Schema::create('sales', function ($table) {
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('users');
-        });
-
-        Schema::create('sales', function ($table) {
-            $table->unsignedBigInteger('product_id ');
-            $table->foreign('product_id ')->references('product_id')->on('products');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('product_id')->on('products');
+            $table->timestamps();
         });
     }
 

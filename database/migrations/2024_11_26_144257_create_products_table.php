@@ -20,12 +20,9 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('default_price', 10, 2);
             $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-
-        Schema::create('products', function ($table) {
             $table->unsignedBigInteger('vendor_id');
             $table->foreign('vendor_id')->references('id')->on('users');
+            $table->timestamps();
         });
     }
 

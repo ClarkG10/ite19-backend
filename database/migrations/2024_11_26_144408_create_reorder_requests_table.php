@@ -15,23 +15,15 @@ return new class extends Migration
             $table->id('reorder_id');
             $table->integer('quantity');
             $table->string('status')->default('Pending');
-            $table->date('shipped_date');
-            $table->date('delivered_date');
-            $table->timestamps();
-        });
-        Schema::create('reorder_requests', function ($table) {
+            $table->date('shipped_date')->nullable();
+            $table->date('delivered_date')->nullable();
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('users');
-        });
-
-        Schema::create('reorder_requests', function ($table) {
             $table->unsignedBigInteger('vendor_id');
             $table->foreign('vendor_id')->references('id')->on('users');
-        });
-
-        Schema::create('reorder_requests', function ($table) {
-            $table->unsignedBigInteger('product_id ');
-            $table->foreign('product_id ')->references('product_id ')->on('products');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('product_id')->on('products');
+            $table->timestamps();
         });
     }
 

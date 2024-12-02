@@ -17,17 +17,12 @@ return new class extends Migration
             $table->decimal('new_price', 10, 2);
             $table->integer('reorder_level');
             $table->integer('reorder_quantity');
-            $table->timestamps();
-        });
-
-        Schema::create('inventory', function ($table) {
+            $table->boolean('is_reordered')->default(false);
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('users');
-        });
-
-        Schema::create('inventory', function ($table) {
-            $table->unsignedBigInteger('product_id ');
-            $table->foreign('product_id ')->references('product_id ')->on('products');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('product_id')->on('products');
+            $table->timestamps();
         });
     }
 

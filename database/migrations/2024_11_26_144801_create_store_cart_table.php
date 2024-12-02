@@ -15,17 +15,11 @@ return new class extends Migration
             $table->id('storecart_id');
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('product_id')->on('products');
+            $table->unsignedBigInteger('store_id');
+            $table->foreign('store_id')->references('id')->on('users');
             $table->timestamps();
-        });
-
-        Schema::create('reorder_requests', function ($table) {
-            $table->unsignedBigInteger('product_id ');
-            $table->foreign('product_id ')->references('product_id ')->on('products');
-        });
-
-        Schema::create('reorder_requests', function ($table) {
-            $table->unsignedBigInteger('store_id ');
-            $table->foreign('store_id ')->references('id ')->on('users');
         });
     }
 

@@ -46,19 +46,22 @@ class ProductController extends Controller
             'product_type' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'default_price' => 'required|integer|min:1',
+            'selling_price' => 'nullable|integer|min:1',
+            'cost_price' => 'nullable|integer|min:1',
+            'stock_quantity' => 'nullable|integer|min:1',
+            'status' => 'nullable|string',
             'description' => 'required|string',
-            'required|image|mimes:jpeg,png,jpg,gif|max:5048',
-            'is_active' => 'required|boolean',
+            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'is_active' => 'nullable|boolean',
             'vendor_id' => 'required|integer',
         ]);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images/products', 'public');
-            $validatedData['image'] = $imagePath;
+        if ($request->hasFile('image_path')) {
+            $imagePath = $request->file('image_path')->store('images/products', 'public');
+            $validatedData['image_path'] = $imagePath;
         }
 
         $validatedData['is_active'] = $validatedData['is_active'] ?? true;
-        $validatedData['default_price'] = $validatedData['default_price'] ?? 1;
 
         $product = Product::create($validatedData);
 
@@ -86,7 +89,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateDetails(Request $request, string $id)
     {
         $product = Product::findOrFail($id);
 
@@ -100,18 +103,58 @@ class ProductController extends Controller
             'product_type' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'default_price' => 'nullable|integer|min:1',
-            'description' => 'required|string',
-            'image_path' =>  'required|image|mimes:jpeg,png,jpg,gif|max:5048',
-            'is_active' => 'nullable|boolean',
+            'selling_price' => 'nullable|integer|min:1',
+            'cost_price' => 'nullable|integer|min:1',
+            'description' => 'nullable|string',
+            'image_path' =>  'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
         ]);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images/products', 'public');
-            $validatedData['image'] = $imagePath;
+        if ($request->hasFile('image_path')) {
+            $imagePath = $request->file('image_path')->store('images/products', 'public');
+            $validatedData['image_path'] = $imagePath;
         }
 
-        $validatedData['is_active'] = $validatedData['is_active'] ?? true;
-        $validatedData['default_price'] = $validatedData['default_price'] ?? 1;
+        $product->update($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product Updated successfully.',
+            'data' => $product
+        ], 200);
+    }
+
+    public function updateStatus(Request $request, string $id)
+    {
+        $product = Product::findOrFail($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'status' => 'nullable|string',
+        ]);
+
+        $product->update($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product Updated Status successfully.',
+            'data' => $product
+        ], 200);
+    }
+
+    public function updateIsActive(Request $request, string $id)
+    {
+        $product = Product::findOrFail($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'is_active' => 'nullable|boolean',
+        ]);
 
         $product->update($validatedData);
 

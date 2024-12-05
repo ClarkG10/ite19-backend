@@ -23,14 +23,42 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // Retrieve the validated input data...
-        $validated = $request->validated();
+        // Validate the input data
+        $validatedData = $request->validate([
+            'email' => 'required|string|email|unique:customers,email',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'phone_number' => 'required|integer',
+            'address' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'is_frequent_shopper' => 'nullable|boolean',
+            'role' => 'required|string'
+        ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        // Hash the password
+        $validatedData['password'] = Hash::make($validatedData['password']);
 
-        $customer = Customer::create($validated);
+        // Handle file upload if image_path is provided
+        if ($request->hasFile('image_path')) {
+            $validatedData['image_path'] = $request->file('image_path')->store('customer_images', 'public');
+        }
 
-        return $customer;
+        // Create the customer
+        $customer = Customer::create($validatedData);
+
+        // Return a response without sensitive data
+        return response()->json([
+            'id' => $customer->id,
+            'email' => $customer->email,
+            'first_name' => $customer->first_name,
+            'last_name' => $customer->last_name,
+            'phone_number' => $customer->phone_number,
+            'address' => $customer->address,
+            'image_path' => $customer->image_path,
+            'role' . $customer->role,
+            'created_at' => $customer->created_at,
+        ], 201);
     }
 
     /**
@@ -55,6 +83,7 @@ class CustomerController extends Controller
             'last_name' => 'required|string',
             'phone_number' => 'required|integer',
             'address' => 'required|string',
+            'image_path' =>  'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
         ]);
 
         $customer->update($validatedData);

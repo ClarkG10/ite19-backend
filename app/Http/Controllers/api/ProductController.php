@@ -21,18 +21,28 @@ class ProductController extends Controller
 
     public function vendorProductIndex(Request $request)
     {
-        $userId = $request->user()->id;
-
         if (!$request->user()) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
+        $userId = $request->user()->id;
         $perPage = $request->query('per_page', 10);
+        $keyword = $request->query('keyword', null); // Get the search keyword
 
-        $product = Product::where('store_id', $userId)
-            ->paginate($perPage);
+        $query = Product::where('vendor_id', $userId);
 
-        return response()->json($product);
+        // Apply search filter if a keyword is provided
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('product_name', 'like', "%{$keyword}%")
+                    ->orWhere('product_type', 'like', "%{$keyword}%")
+                    ->orWhere('brand', 'like', "%{$keyword}%");
+            });
+        }
+
+        $products = $query->paginate($perPage);
+
+        return response()->json($products);
     }
 
     /**
@@ -45,12 +55,12 @@ class ProductController extends Controller
             'product_name' => 'required|string|max:255',
             'product_type' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
-            'default_price' => 'required|integer|min:1',
-            'selling_price' => 'nullable|integer|min:1',
-            'cost_price' => 'nullable|integer|min:1',
+            'selling_price' => 'nullable|numeric|min:1',
+            'cost_price' => 'nullable|numeric|min:1',
+            'section_name' => 'nullable|string|max:255',
             'stock_quantity' => 'nullable|integer|min:1',
             'status' => 'nullable|string',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
             'is_active' => 'nullable|boolean',
             'vendor_id' => 'required|integer',
@@ -91,22 +101,21 @@ class ProductController extends Controller
      */
     public function updateDetails(Request $request, string $id)
     {
+        // Find the product or return 404 if not found
         $product = Product::findOrFail($id);
 
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-
+        // Validate the incoming data
         $validatedData = $request->validate([
-            'UPC' => 'nullable|unique:App\Models\Product',
-            'product_name' => 'required|string|max:255',
-            'product_type' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'default_price' => 'nullable|integer|min:1',
-            'selling_price' => 'nullable|integer|min:1',
-            'cost_price' => 'nullable|integer|min:1',
-            'description' => 'nullable|string',
-            'image_path' =>  'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'product_name'   => 'nullable|string|max:255',
+            'product_type'   => 'nullable|string|max:255',
+            'brand'          => 'nullable|string|max:255',
+            'section_name'   => 'nullable|string|max:255',
+            'selling_price'  => 'nullable|numeric|min:1',
+            'cost_price'     => 'nullable|numeric|min:1',
+            'description'    => 'nullable|string',
+            'stock_quantity' => 'nullable|integer|min:1',
+            'image_path'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'status'         => 'nullable|string',
         ]);
 
         if ($request->hasFile('image_path')) {
@@ -114,14 +123,16 @@ class ProductController extends Controller
             $validatedData['image_path'] = $imagePath;
         }
 
-        $product->update($validatedData);
+        $product->save($validatedData);
 
+        // Respond with success
         return response()->json([
             'success' => true,
-            'message' => 'Product Updated successfully.',
-            'data' => $product
+            'message' => 'Product updated successfully.',
+            'data'    => $product
         ], 200);
     }
+
 
     public function updateStatus(Request $request, string $id)
     {

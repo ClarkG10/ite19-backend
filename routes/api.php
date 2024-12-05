@@ -24,8 +24,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/user', [UserController::class, 'index']);
+Route::post('/customer', [CustomerController::class, 'store']);
 Route::post('/user', [UserController::class, 'store'])->name('user.store');
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
@@ -40,7 +42,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/customer',                     'index');
-        Route::post('/customer',                    'store');
         Route::get('/customer/{id}',                'show');
         Route::put('/user/isFrequentShopper/{id}',  'isFrequentShopper')->name('user.isFrequentShopper');
         Route::put('/user/password/{id}',           'password')->name('user.password');
@@ -62,7 +63,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/vendor/product',               'vendorProductIndex');
         Route::post('/product',                     'store');
         Route::get('/product/{id}',                 'show');
-        Route::put('/product/{id}',                 'update');
+        Route::put('/product/{id}',                 'updateDetails');
+        Route::put('/product-status/{id}',          'updateStatus');
+        Route::put('/product-isActive/{id}',        'updateIsActive');
         Route::delete('/product/{id}',              'destroy');
     });
 
@@ -71,7 +74,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/user/reorder-request',         'userReorderIndex');
         Route::post('/reorder-request',             'store');
         Route::get('/reorder-request/{id}',         'show');
-        Route::put('/reorder-request/{id}',            'update');
+        Route::put('/reorder-request/{id}',         'update');
         Route::put('/reorder-quantity/{id}',        'updateQuantity');
         Route::delete('/reorder-request/{id}',      'destroy');
     });

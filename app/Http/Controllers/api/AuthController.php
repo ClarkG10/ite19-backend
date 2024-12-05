@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
-use App\Models\Staff;
-use App\Models\Donor;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
-use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -16,26 +14,39 @@ class AuthController extends Controller
 {
     public function login(UserRequest $request)
     {
-        $user = User::where('email', $request->email)->first();
-        $customer = Customer::where('email', $request->email)->first();
+        $user = $this->authenticate($request->email, $request->password);
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            return $this->createTokenResponse($user, 'user');
-        }
-        if ($customer && Hash::check($request->password, $customer->password)) {
-            return $this->createTokenResponse($customer, 'customer');
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
         }
 
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
+        return $this->createTokenResponse($user['model'], $user['type']);
     }
 
-    protected function createTokenResponse($user, $type)
+    protected function authenticate($email, $password)
+    {
+        // Check User table
+        $user = User::where('email', $email)->first();
+        if ($user && Hash::check($password, $user->password)) {
+            return ['model' => $user, 'type' => 'user'];
+        }
+
+        // Check Customer table
+        $customer = Customer::where('email', $email)->first();
+        if ($customer && Hash::check($password, $customer->password)) {
+            return ['model' => $customer, 'type' => 'customer'];
+        }
+
+        return null;
+    }
+
+    protected function createTokenResponse($model, $type)
     {
         return response()->json([
-            'user'  => $user,
-            'token' => $user->createToken($user->email)->plainTextToken,
+            'user'  => $model,
+            'token' => $model->createToken($model->email)->plainTextToken,
             'type'  => $type,
         ]);
     }

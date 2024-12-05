@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('UPC')->unique();
             $table->string('product_name');
             $table->string('product_type');
+            $table->string('section_name')->nullable();
+            $table->string('brand');
             $table->text('image_path');
             $table->text('description')->nullable();
-            $table->decimal('default_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
             $table->decimal('cost_price', 10, 2);
             $table->integer('stock_quantity');

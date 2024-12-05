@@ -41,8 +41,8 @@ class SalesController extends Controller
     {
         $validatedData = $request->validate([
             'quantity' => 'required|integer',
-            'price' => 'required|integer',
-            'total_amount' => 'required|integer',
+            'price' => 'required|numeric|min:1',
+            'total_amount' => 'required|numeric|min:1',
             'payment_method' => 'required|string',
             'store_id' => 'required|integer',
             'product_id' => 'required|integer',
@@ -85,8 +85,8 @@ class SalesController extends Controller
 
         $validatedData = $request->validate([
             'quantity' => 'required|integer',
-            'price' => 'required|integer',
-            'total_amount' => 'required|integer',
+            'price' => 'required|numeric',
+            'total_amount' => 'required|numeric',
             'payment_method' => 'required|string',
             'product_id' => 'required|integer',
             'customer_id' => 'required|integer',

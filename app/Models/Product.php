@@ -27,7 +27,21 @@ class Product extends Model
      *
      * @var array
      */
-    protected $fillable = ['UPC', 'product_name', 'product_type', 'brand', 'default_price', 'description', 'image_path', 'is_active', 'vendor_id'];
+    protected $fillable = [
+        'UPC', //automatic nani generated pwede ra wala
+        'product_name',
+        'product_type',
+        'brand',
+        'description',
+        'image_path',
+        'is_active', // naa default value pwede ra wala
+        'vendor_id', // id sa vendor nga nacreate nga acc and mao ni tag iya sa isa ka product pwede mag balik2
+        'section_name', // kadtong grocery, electronics or unsa pa
+        'status', //pwede ra wala kay naa ni default value
+        'selling_price',
+        'cost_price',
+        'stock_quantity'
+    ];
 
     /**
      * The attributes that aren't mass assignable.

@@ -34,11 +34,12 @@ class UserRequest extends FormRequest
                 'business_name' => 'required|string|max:255',
                 'business_number' => 'required|string|max:255',
                 'phone_number' => 'required|integer|min:10',
-                'business_address' => 'required|string|max:255',
+                'business_address' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
                 'zipcode' => 'required|integer',
                 'operating_hours' => 'required|string',
+                'image_path' =>  'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
             ];
         } else if (request()->routeIs('user.update')) {
             return [
@@ -52,6 +53,8 @@ class UserRequest extends FormRequest
                 'country' => 'required|string',
                 'zipcode' => 'required|integer',
                 'operating_hours' => 'required|string',
+                'image_path' =>  'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
+
             ];
         } else if (request()->routeIs('user.password')) {
             return [

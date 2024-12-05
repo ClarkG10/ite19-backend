@@ -39,7 +39,7 @@ class StoreCartController extends Controller
         $validatedData = $request->validate([
             'product_id' => 'required|integer',
             'quantity' => 'required|integer',
-            'price' => 'required|integer',
+            'price' => 'required|numeric',
             'store_id' => 'required|integer',
             'vendor_id' => 'required|integer',
         ]);

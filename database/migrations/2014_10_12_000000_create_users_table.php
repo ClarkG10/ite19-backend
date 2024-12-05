@@ -20,11 +20,12 @@ return new class extends Migration
             $table->string('business_type');
             $table->string('business_number');
             $table->text('business_address');
-            $table->integer('phone_number');
+            $table->string('phone_number');
             $table->string('country');
             $table->string('city');
             $table->integer('zipcode');
             $table->string('operating_hours');
+            $table->text('image_path')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

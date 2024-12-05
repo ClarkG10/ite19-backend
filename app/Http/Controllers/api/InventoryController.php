@@ -46,7 +46,7 @@ class InventoryController extends Controller
     {
         $validatedData = $request->validate([
             'quantity' => 'required|integer|min:1',
-            'new_price' => 'required|integer|min:1',
+            'new_price' => 'required|numeric|min:1',
             'reorder_level' => 'required|integer',
             'reorder_quantity' => 'required|integer',
             'store_id' => 'required|integer',
@@ -88,7 +88,7 @@ class InventoryController extends Controller
 
         $validatedData = $request->validate([
             'quantity' => 'integer|min:1',
-            'new_price' => 'integer|min:1',
+            'new_price' => 'integer|numeric|min:1',
             'reorder_level' => 'integer|min:1',
             'reorder_quantity' => 'integer|min:1',
         ]);

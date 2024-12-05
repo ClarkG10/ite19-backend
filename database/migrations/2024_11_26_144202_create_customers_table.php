@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('first_name');
             $table->string('last_name');
-            $table->integer('phone_number');
+            $table->string('phone_number', 15); // Changed to string with a max length.
             $table->text('address');
+            $table->string('image_path')->nullable(); // Changed to string.
             $table->boolean('is_frequent_shopper')->default(false);
             $table->timestamps();
         });

@@ -88,7 +88,7 @@ class InventoryController extends Controller
 
         $validatedData = $request->validate([
             'quantity' => 'integer|min:1',
-            'new_price' => 'integer|numeric|min:1',
+            'new_price' => 'numeric|min:1',
             'reorder_level' => 'integer|min:1',
             'reorder_quantity' => 'integer|min:1',
         ]);
@@ -96,6 +96,19 @@ class InventoryController extends Controller
         $inventory->update($validatedData);
 
         return response()->json($inventory);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'is_reordered' => 'required|boolean',
+        ]);
+
+        $inventory = Inventory::findOrFail($id);
+        $inventory->is_reordered = $validatedData['is_reordered'];
+        $inventory->save();
+
+        return response()->json(['message' => 'Status updated successfully'], 200);
     }
 
     /**

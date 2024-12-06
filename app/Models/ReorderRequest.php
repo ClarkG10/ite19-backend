@@ -29,6 +29,16 @@ class ReorderRequest extends Model
      */
     protected $fillable = ['quantity', 'status', 'shipped_date', 'delivered_date', 'store_id', 'vendor_id', 'product_id'];
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(User::class, 'store_id'); // Assuming 'User' model represents stores
+    }
+
     /**
      * The attributes that aren't mass assignable.
      *

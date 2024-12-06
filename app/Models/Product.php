@@ -43,6 +43,12 @@ class Product extends Model
         'stock_quantity'
     ];
 
+    public function reorderRequests()
+    {
+        return $this->hasMany(ReorderRequest::class, 'product_id');
+    }
+
+
     /**
      * The attributes that aren't mass assignable.
      *

@@ -19,6 +19,11 @@ class User extends Authenticatable
      */
     protected $fillable = ['email', 'password', 'business_name', 'business_type', 'business_number', 'business_address', 'phone_number', 'country', 'city', 'zipcode', 'operating_hours', 'image_path'];
 
+    public function reorderRequests()
+    {
+        return $this->hasMany(ReorderRequest::class, 'id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

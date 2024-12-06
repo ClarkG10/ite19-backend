@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/user', [UserController::class, 'index']);
 Route::post('/customer', [CustomerController::class, 'store']);
 Route::post('/user', [UserController::class, 'store'])->name('user.store');
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
@@ -34,6 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile/show',  [ProfileController::class, 'show']);
 
     Route::controller(UserController::class)->group(function () {
+        Route::get('/user',                     'index');
         Route::get('/user/{id}',                'show');
         Route::put('/user/{id}',                'updateUserAccount')->name('user.update');
         Route::put('/user/password/{id}',       'password')->name('user.password');
@@ -55,6 +55,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/inventory',                   'store');
         Route::get('/inventory/{id}',               'show');
         Route::put('/inventory/{id}',               'update');
+        Route::put('/inventory/status/{id}',        'updateStatus');
         Route::delete('/inventory/{id}',            'destroy');
     });
 
@@ -71,7 +72,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::controller(ReorderRequestController::class)->group(function () {
         Route::get('/reorder-request',              'index');
-        Route::get('/user/reorder-request',         'userReorderIndex');
+        Route::get('/reorder-request/user',         'userReorderIndex');
         Route::post('/reorder-request',             'store');
         Route::get('/reorder-request/{id}',         'show');
         Route::put('/reorder-request/{id}',         'update');
@@ -81,7 +82,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::controller(SalesController::class)->group(function () {
         Route::get('/sales',                        'index');
-        Route::get('/store/sales',                  'storeSaleIndex');
+        Route::get('/sales/store',                  'storeSaleIndex');
         Route::post('/sales',                       'store');
         Route::get('/sales/{id}',                   'show');
         Route::put('/sales/{id}',                   'update');

@@ -32,11 +32,33 @@ class InventoryController extends Controller
             ->paginate($perPage);
 
         if ($inventory->isEmpty()) {
-            return response()->json(['message' => 'No inventory found'], 404);
+            return response()->json(['message' => 'No inventory found'], 200);
         }
 
         return response()->json($inventory);
     }
+
+    public function storeInventoryall(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        // Check if the user is authenticated
+        if (!$userId) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        // Retrieve the inventory for the authenticated user
+        $inventory = Inventory::where('store_id', $userId)->get();
+
+        // Check if inventory is empty
+        if ($inventory->isEmpty()) {
+            return response()->json(['message' => 'No inventory found'], 200);
+        }
+
+        // Return the inventory data
+        return response()->json($inventory);
+    }
+
 
 
     /**

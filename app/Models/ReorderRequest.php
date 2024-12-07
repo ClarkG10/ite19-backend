@@ -27,7 +27,7 @@ class ReorderRequest extends Model
      *
      * @var array
      */
-    protected $fillable = ['quantity', 'status', 'shipped_date', 'delivered_date', 'store_id', 'vendor_id', 'product_id'];
+    protected $fillable = ['quantity', 'status', 'shipped_date', 'delivered_date', 'store_id', 'vendor_id', 'product_id', 'order_type'];
 
     public function product()
     {

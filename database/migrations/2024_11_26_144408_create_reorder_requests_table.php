@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('status')->default('Pending');
             $table->date('shipped_date')->nullable();
             $table->date('delivered_date')->nullable();
+            $table->string('order_type')->nullable();
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('users');
             $table->unsignedBigInteger('vendor_id');

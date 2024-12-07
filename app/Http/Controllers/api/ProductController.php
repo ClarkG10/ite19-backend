@@ -57,6 +57,7 @@ class ProductController extends Controller
             'brand' => 'required|string|max:255',
             'selling_price' => 'nullable|numeric|min:1',
             'cost_price' => 'nullable|numeric|min:1',
+            'wholesale_price' => 'nullable|numeric|min:1',
             'section_name' => 'nullable|string|max:255',
             'stock_quantity' => 'nullable|integer|min:1',
             'status' => 'nullable|string',
@@ -106,16 +107,17 @@ class ProductController extends Controller
 
         // Validate the incoming data
         $validatedData = $request->validate([
-            'product_name'   => 'nullable|string|max:255',
-            'product_type'   => 'nullable|string|max:255',
-            'brand'          => 'nullable|string|max:255',
+            'product_name'   => 'required|string|max:255',
+            'product_type'   => 'required|string|max:255',
+            'brand'          => 'required|string|max:255',
             'section_name'   => 'nullable|string|max:255',
-            'selling_price'  => 'nullable|numeric|min:1',
-            'cost_price'     => 'nullable|numeric|min:1',
+            'selling_price'  => 'required|numeric|min:1',
+            'cost_price'     => 'required|numeric|min:1',
+            'wholesale_price' => 'required|numeric|min:1',
             'description'    => 'nullable|string',
-            'stock_quantity' => 'nullable|integer|min:1',
+            'stock_quantity' => 'required|integer|min:1',
             'image_path'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
-            'status'         => 'nullable|string',
+            'status'         => 'required|string',
         ]);
 
         if ($request->hasFile('image_path')) {
@@ -123,7 +125,7 @@ class ProductController extends Controller
             $validatedData['image_path'] = $imagePath;
         }
 
-        $product->save($validatedData);
+        $product->update($validatedData);
 
         // Respond with success
         return response()->json([

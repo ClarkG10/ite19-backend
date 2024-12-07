@@ -76,6 +76,7 @@ class ReorderRequestController extends Controller
             'store_id' => 'required|integer',
             'vendor_id' => 'required|integer',
             'product_id' => 'required|integer',
+            'order_type' => 'required|string',
         ]);
 
         $product = ReorderRequest::create($validatedData);

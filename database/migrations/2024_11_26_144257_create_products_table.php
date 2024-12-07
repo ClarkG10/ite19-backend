@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('selling_price', 10, 2);
             $table->decimal('cost_price', 10, 2);
+            $table->decimal('wholesale_price', 10, 2);
             $table->integer('stock_quantity');
             $table->string('status')->default('Available');
             $table->boolean('is_active')->default(true);

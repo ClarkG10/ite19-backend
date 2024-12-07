@@ -40,7 +40,8 @@ class Product extends Model
         'status', //pwede ra wala kay naa ni default value
         'selling_price',
         'cost_price',
-        'stock_quantity'
+        'wholesale_price',
+        'stock_quantity',
     ];
 
     public function reorderRequests()

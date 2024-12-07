@@ -28,7 +28,7 @@ class CustomerController extends Controller
             'email' => 'required|string|email|unique:customers,email',
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'phone_number' => 'required|integer',
+            'phone_number' => 'required|string',
             'address' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
             'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',

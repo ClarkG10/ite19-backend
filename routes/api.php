@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(InventoryController::class)->group(function () {
         Route::get('/inventory/all',                'index');
         Route::get('/store/inventory',              'storeInventoryIndex');
+        Route::get('/inventory/store/all',          'storeInventoryall');
         Route::post('/inventory',                   'store');
         Route::get('/inventory/{id}',               'show');
         Route::put('/inventory/{id}',               'update');
@@ -64,7 +65,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/vendor/product',               'vendorProductIndex');
         Route::post('/product',                     'store');
         Route::get('/product/{id}',                 'show');
-        Route::put('/product/{id}',                 'updateDetails');
+        Route::put('/product/details/{id}',         'updateDetails');
         Route::put('/product-status/{id}',          'updateStatus');
         Route::put('/product-isActive/{id}',        'updateIsActive');
         Route::delete('/product/{id}',              'destroy');

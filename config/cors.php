@@ -15,11 +15,18 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'inventory/*'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['*'], // Replace '*' with specific domains for security
+
+    'allowed_origins' => ['http://127.0.0.1:5500', 'http://127.0.0.1:5501'],
+
+    'allowed_origins_patterns' => [],
+
     'allowed_headers' => ['*'],
+
     'exposed_headers' => [],
+
     'max_age' => 0,
-    'supports_credentials' => false,
+
+    'supports_credentials' => true,
 ];

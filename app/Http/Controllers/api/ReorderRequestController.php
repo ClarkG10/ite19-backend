@@ -46,7 +46,8 @@ class ReorderRequestController extends Controller
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($request) {
                 $q->where('quantity', 'like',  $request->keyword)
-                    ->orWhere('status', 'like',  $request->keyword);
+                    ->orWhere('status', 'like',  $request->keyword)
+                    ->orWhere('order_type', 'like',  $request->keyword);
             });
         }
 
@@ -107,27 +108,31 @@ class ReorderRequestController extends Controller
      */
     public function updateQuantity(Request $request, string $id)
     {
-
+        // Validate incoming request
         $validatedData = $request->validate([
+            'order_type' => 'required|string',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        Log::info('Incoming Request:', $validatedData); // This will log the validated data
+        Log::info('Incoming Request:', $validatedData); // Log the validated data
 
+        // Find the reorder request or fail
         $reorderRequest = ReorderRequest::findOrFail($id);
 
-        if (!$reorderRequest) {
-            return response()->json(['error' => 'Reorder request not found'], 404);
-        }
-        $reorderRequest->quantity = $validatedData['quantity'];
-        $reorderRequest->update();
+        // Update the reorder request with validated data
+        $reorderRequest->update([
+            'order_type' => $validatedData['order_type'],
+            'quantity' => $validatedData['quantity'],
+        ]);
 
+        // Return success response
         return response()->json([
             'success' => true,
             'message' => 'Reorder request updated successfully.',
-            'data' => $reorderRequest
+            'data' => $reorderRequest,
         ], 200);
     }
+
 
     public function update(Request $request, string $id)
     {

@@ -56,7 +56,7 @@ class ReorderRequestController extends Controller
 
         // Check if no data was found
         if ($reorderRequest->isEmpty()) {
-            return response()->json(['message' => 'No reorder requests found'], 404);
+            return response()->json(['message' => 'No reorder requests found'], 200);
         }
 
         // Return the paginated response

@@ -118,6 +118,7 @@ class ProductController extends Controller
             'stock_quantity' => 'required|integer|min:1',
             'image_path'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
             'status'         => 'required|string',
+            'is_active'     => 'nullable|boolean',
         ]);
 
         if ($request->hasFile('image_path')) {
@@ -159,16 +160,17 @@ class ProductController extends Controller
 
     public function updateIsActive(Request $request, string $id)
     {
+        $validatedData = $request->validate([
+            'is_active' => 'required|boolean',
+        ]);
+
         $product = Product::findOrFail($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        $validatedData = $request->validate([
-            'is_active' => 'nullable|boolean',
-        ]);
-
+        $product->is_active = $validatedData['is_active'];
         $product->update($validatedData);
 
         return response()->json([

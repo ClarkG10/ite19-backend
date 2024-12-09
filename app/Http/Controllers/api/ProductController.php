@@ -19,6 +19,27 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+    public function listtAllProducts(Request $request)
+    {
+        $perPage = $request->query('per_page', 20);
+        $keyword = $request->query('keyword', null); // Get the search keyword
+
+        $query = Product::query();
+
+        // Apply search filter if a keyword is provided
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('product_name', 'like', "%{$keyword}%")
+                    ->orWhere('product_type', 'like', "%{$keyword}%")
+                    ->orWhere('brand', 'like', "%{$keyword}%");
+            });
+        }
+
+        $products = $query->paginate($perPage);
+
+        return response()->json($products);
+    }
+
     public function vendorProductIndex(Request $request)
     {
         if (!$request->user()) {

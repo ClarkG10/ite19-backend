@@ -28,7 +28,7 @@ class UserRequest extends FormRequest
             ];
         } else if (request()->routeIs('user.store')) {
             return [
-                'email' => 'required|string|email|unique:App\Models\User',
+                'email' => 'required|string|email|unique:App\Models\User||unique:App\Models\Customer',
                 'password' => 'required|min:8|confirmed',
                 'business_type' => 'required|string|max:255',
                 'business_name' => 'required|string|max:255',

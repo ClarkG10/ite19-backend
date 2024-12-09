@@ -25,7 +25,7 @@ class CustomerController extends Controller
     {
         // Validate the input data
         $validatedData = $request->validate([
-            'email' => 'required|string|email|unique:customers,email',
+            'email' => 'required|string|email|unique:App\Models\User|unique:App\Models\Customer',
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'phone_number' => 'required|string',

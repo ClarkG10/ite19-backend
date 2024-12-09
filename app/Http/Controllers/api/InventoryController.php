@@ -59,8 +59,6 @@ class InventoryController extends Controller
         return response()->json($inventory);
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      */

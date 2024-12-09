@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\CustomerController;
 use App\Http\Controllers\api\InventoryController;
+use App\Http\Controllers\api\OrderController;
 use App\Http\Controllers\api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\api\ReorderRequestController;
@@ -27,13 +28,16 @@ Route::post('/customer', [CustomerController::class, 'store']);
 Route::post('/user', [UserController::class, 'store'])->name('user.store');
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 
+Route::get('/product/all', [ProductController::class, 'index']);
+Route::get('/product/shop/all', [ProductController::class, 'listtAllProducts']);
+Route::get('/user', [UserController::class, 'index']);
+Route::get('/inventory/all', [InventoryController::class, 'index']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/profile/show',  [ProfileController::class, 'show']);
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/user',                     'index');
         Route::get('/user/{id}',                'show');
         Route::put('/user/{id}',                'updateUserAccount')->name('user.update');
         Route::put('/user/password/{id}',       'password')->name('user.password');
@@ -50,7 +54,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::controller(InventoryController::class)->group(function () {
-        Route::get('/inventory/all',                'index');
         Route::get('/store/inventory',              'storeInventoryIndex');
         Route::get('/inventory/store/all',          'storeInventoryall');
         Route::post('/inventory',                   'store');
@@ -61,7 +64,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::controller(ProductController::class)->group(function () {
-        Route::get('/product/all',                  'index');
         Route::get('/vendor/product',               'vendorProductIndex');
         Route::post('/product',                     'store');
         Route::get('/product/{id}',                 'show');
@@ -97,5 +99,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/store-cart/{id}',             'show');
         Route::put('/store-cart/{id}',             'update');
         Route::delete('/store-cart/{id}',          'destroy');
+    });
+
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/order',                        'index');
+        Route::get('/order/user',                   'userOrderIndex');
+        Route::post('/order',                       'store');
+        Route::get('/order/{id}',                   'show');
+        Route::put('/order-status/{id}',            'updateStatus');
+        Route::delete('/order/{id}',                'destroy');
     });
 });

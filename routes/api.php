@@ -9,7 +9,6 @@ use App\Http\Controllers\api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\api\ReorderRequestController;
 use App\Http\Controllers\api\SalesController;
-use App\Http\Controllers\api\StoreCartController;
 use App\Http\Controllers\api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -97,15 +96,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/sales/{id}',                   'show');
         Route::put('/sales/{id}',                   'update');
         Route::delete('/sales/{id}',                'destroy');
-    });
-
-    Route::controller(StoreCartController::class)->group(function () {
-        Route::get('/store-cart',                 'index');
-        Route::get('/store-cart',                 'storeCartIndex');
-        Route::post('/store-cart',                'store');
-        Route::get('/store-cart/{id}',             'show');
-        Route::put('/store-cart/{id}',             'update');
-        Route::delete('/store-cart/{id}',          'destroy');
     });
 
     Route::controller(OrderController::class)->group(function () {

@@ -20,19 +20,41 @@ class SalesController extends Controller
 
     public function storeSaleIndex(Request $request)
     {
-        $userId = $request->user()->id;
+        // Validate the input
+        $validated = $request->validate([
+            'per_page' => 'nullable|integer|min:1',
+            'keyword' => 'nullable|string|max:255',
+        ]);
 
-        if (!$request->user()) {
+        // Get the authenticated user's ID
+        $user = $request->user();
+
+        if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $perPage = $request->query('per_page', 10);
+        $userId = $user->id;
+        $perPage = $validated['per_page'] ?? 10;
 
-        $sale = Sale::where('store_id', $userId)
-            ->paginate($perPage);
+        // Base query with filters
+        $saleQuery = Sale::where('store_id', $userId)
+            ->when($request->filled('keyword'), function ($query) use ($request) {
+                $keyword = $request->keyword;
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('quantity', 'like', $keyword)
+                        ->orWhere('payment_method', 'like', '%' . $keyword . '%')
+                        ->orWhere('total_amount', 'like',  $keyword)
+                        ->orWhere('price', 'like',  $keyword);
+                });
+            });
 
-        return response()->json($sale);
+        // Paginate the results
+        $sales = $saleQuery->paginate($perPage);
+
+        // Return the paginated response
+        return response()->json($sales);
     }
+
 
     /**
      * Store a newly created resource in storage.

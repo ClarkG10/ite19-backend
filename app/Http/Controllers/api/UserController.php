@@ -13,9 +13,22 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::all();
+        $keyword = $request->query('keyword', null);
+
+        $query = User::query();
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('product_name', 'like', "%{$keyword}%")
+                    ->orWhere('product_type', 'like', "%{$keyword}%")
+                    ->orWhere('brand', 'like', "%{$keyword}%");
+            });
+        }
+
+        $users = $query->get();
+
+        return response()->json($users);
     }
 
 
@@ -28,6 +41,11 @@ class UserController extends Controller
         $validated = $request->validated();
 
         $validated['password'] = Hash::make($validated['password']);
+
+        if ($request->hasFile('image_path')) {
+            $imagePath = $request->file('image_path')->store('images/store_images', 'public');
+            $validated['image_path'] = $imagePath;
+        }
 
         $user = User::create($validated);
 

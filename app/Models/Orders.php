@@ -27,8 +27,22 @@ class Orders extends Model
      *
      * @var array
      */
-    protected $fillable = ['status', 'quantity', 'price', 'shipping_date', 'delivered_date', 'shipping_address', 'shipping_cost', 'payment_method', 'store_id', 'product_id', 'customer_id', 'total_amount'];
+    protected $fillable = ['status', 'shipped_date', 'delivered_date', 'shipping_address', 'shipping_cost', 'payment_method', 'store_id', 'cart_id', 'customer_id', 'total_amount'];
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class, 'cart_id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(User::class, 'id');
+    }
     /**
      * The attributes that aren't mass assignable.
      *

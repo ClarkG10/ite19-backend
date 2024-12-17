@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\api\CartController;
 use App\Http\Controllers\api\CustomerController;
 use App\Http\Controllers\api\InventoryController;
 use App\Http\Controllers\api\OrderController;
@@ -33,9 +34,15 @@ Route::get('/product/shop/all', [ProductController::class, 'listtAllProducts']);
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/inventory/all', [InventoryController::class, 'index']);
 
+// cart api routes
+Route::post('/carts/add', [CartController::class, 'addItem']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/profile/show',  [ProfileController::class, 'show']);
+    Route::get('/carts/by-store', [CartController::class, 'getCart']);
+    Route::delete('/carts/item/{itemId}', [CartController::class, 'removeItem']);
+    Route::post('/carts/{action}/{itemId}', [CartController::class, 'updateQuantity']);
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/user/{id}',                'show');

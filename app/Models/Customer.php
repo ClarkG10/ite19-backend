@@ -56,6 +56,11 @@ class Customer extends Model
         'role',
     ];
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

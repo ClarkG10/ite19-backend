@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reorder_requests', function (Blueprint $table) {
             $table->id('reorder_id');
             $table->integer('quantity');
-            $table->string('status')->default('Pending');
+            $table->string('status')->default('Pending')->nullable();
             $table->date('shipped_date')->nullable();
             $table->date('delivered_date')->nullable();
             $table->string('order_type')->nullable();

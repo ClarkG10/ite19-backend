@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('reorder_level');
             $table->integer('reorder_quantity');
             $table->boolean('is_reordered')->default(false);
+            $table->string('order_type');
+            $table->integer('auto_order_quantity');
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('users');
             $table->unsignedBigInteger('product_id');

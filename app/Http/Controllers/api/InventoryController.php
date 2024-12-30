@@ -67,10 +67,12 @@ class InventoryController extends Controller
         $validatedData = $request->validate([
             'quantity' => 'required|integer|min:1',
             'new_price' => 'required|numeric|min:1',
-            'reorder_level' => 'required|integer',
-            'reorder_quantity' => 'required|integer',
+            'reorder_level' => 'required|integer|min:1',
+            'reorder_quantity' => 'required|integer|min:1',
             'store_id' => 'required|integer',
             'product_id' => 'required|integer',
+            'order_type' => 'required|string',
+            'auto_order_quantity' => 'required|integer|min:1',
         ]);
 
         $product = Inventory::create($validatedData);
@@ -111,6 +113,8 @@ class InventoryController extends Controller
             'new_price' => 'numeric|min:1',
             'reorder_level' => 'integer|min:1',
             'reorder_quantity' => 'integer|min:1',
+            'order_type' => 'string',
+            'auto_order_quantity' => 'integer|min:1',
         ]);
 
         $inventory->update($validatedData);

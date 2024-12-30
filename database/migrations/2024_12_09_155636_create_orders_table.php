@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id('order_id');
-            $table->string('status');
+            $table->string('status')->default('Pending');
             $table->string('shipping_address');
             $table->integer('shipping_cost');
-            $table->date('shipped_date');
-            $table->date('delivered_date');
-            $table->string('payment_method')->default("Cash On Delivery");
+            $table->date('shipped_date')->nullable();
+            $table->date('delivered_date')->nullable();
+            $table->string('payment_method')->default("Cash On Delivery")->nullable();
             $table->decimal('total_amount', 10, 2);
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('store_id');

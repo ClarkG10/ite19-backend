@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('customer_id')->references('customer_id')->on('customers');
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('users');
-            $table->boolean('is_delivered')->default(false);
+            $table->boolean('is_ordered')->default(false);
             $table->timestamps(); // Tracks creation and update times
         });
     }

@@ -27,7 +27,7 @@ class Inventory extends Model
      *
      * @var array
      */
-    protected $fillable = ['quantity', 'new_price', 'reorder_level', 'reorder_quantity', 'store_id', 'product_id'];
+    protected $fillable = ['quantity', 'new_price', 'reorder_level', 'reorder_quantity', 'order_type', 'auto_order_quantity', 'store_id', 'product_id'];
 
     public function store()
     {

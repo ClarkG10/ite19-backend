@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->decimal('total_amount', 10, 2);
-            $table->string('payment_method')->default('Cash on Delivery');
+            $table->string('payment_method')->default('Cash on Delivery')->nullable();
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('customer_id')->on('customers');
             $table->unsignedBigInteger('store_id');

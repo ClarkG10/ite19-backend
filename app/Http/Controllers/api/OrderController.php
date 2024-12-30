@@ -63,57 +63,6 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
-    public function placeOrder(Request $request)
-    {
-        $validated = $request->validate([
-            'store_id' => 'required|exists:stores,id',
-            'shipping_address' => 'required|string',
-            'payment_method' => 'required|string',
-        ]);
-
-        $cartItems = CartItem::where('cart_id', auth()->id())->get();
-
-        if ($cartItems->isEmpty()) {
-            return response()->json(['error' => 'Cart is empty'], 400);
-        }
-
-        $totalAmount = $cartItems->sum(function ($item) {
-            return $item->quantity * $item->price;
-        });
-
-        $order = Orders::create([
-            'store_id' => $validated['store_id'],
-            'customer_id' => auth()->id(),
-            'shipping_address' => $validated['shipping_address'],
-            'payment_method' => $validated['payment_method'],
-            'total_amount' => $totalAmount,
-            'status' => 'Pending',
-        ]);
-
-        foreach ($cartItems as $item) {
-            $inventory = Inventory::where('store_id', $validated['store_id'])
-                ->where('product_id', $item->product_id)
-                ->first();
-
-            if ($inventory && $inventory->quantity >= $item->quantity) {
-                $inventory->quantity -= $item->quantity;
-                $inventory->save();
-
-                $order->cartItems()->create([
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->price,
-                ]);
-
-                $item->delete();
-            } else {
-                return response()->json(['error' => 'Stock issue with product ID ' . $item->product_id], 400);
-            }
-        }
-
-        return response()->json(['message' => 'Order placed successfully', 'order' => $order]);
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -124,12 +73,8 @@ class OrderController extends Controller
             'store_id' => 'required|integer',
             'cart_id' => 'required|integer',
             'total_amount' => 'required|numeric|min:1',
-            'payment_method' => 'required|string',
-            'status' => 'required|string',
             'shipping_address' => 'required|string',
             'shipping_cost' => 'required|numeric|min:0',
-            'shipped_date' => 'required|date',
-            'delivered_date' => 'required|date',
         ]);
 
         $order = Orders::create($validatedData);

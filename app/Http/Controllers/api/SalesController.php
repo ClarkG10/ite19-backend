@@ -46,7 +46,7 @@ class SalesController extends Controller
                         ->orWhere('total_amount', 'like',  $keyword)
                         ->orWhere('price', 'like',  $keyword);
                 });
-            });
+            })->orderBy('created_at', 'desc');
 
         // Paginate the results
         $sales = $saleQuery->paginate($perPage);
@@ -65,7 +65,7 @@ class SalesController extends Controller
             'quantity' => 'required|integer',
             'price' => 'required|numeric|min:1',
             'total_amount' => 'required|numeric|min:1',
-            'payment_method' => 'required|string',
+            // 'payment_method' => 'required|string', // way labot
             'store_id' => 'required|integer',
             'product_id' => 'required|integer',
             'customer_id' => 'required|integer',

@@ -42,6 +42,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/carts/by-store', [CartController::class, 'getCart']);
     Route::delete('/carts/item/{itemId}', [CartController::class, 'removeItem']);
     Route::post('/carts/{action}/{itemId}', [CartController::class, 'updateQuantity']);
+    Route::get('/carts/storeIndex', [CartController::class, 'cartStoreIndex']);
+    Route::get('/carts/show/{id}', [CartController::class, 'cartShow']);
+    Route::put('/carts/{id}/update-status', [CartController::class, 'updateCartStatus']);
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/user/{id}',                'show');

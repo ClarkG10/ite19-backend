@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\CartItem;
 use App\Models\Inventory;
 
-
 class CartController extends Controller
 {
     public function getCart(Request $request)
@@ -19,9 +18,9 @@ class CartController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        // Retrieve the cart for the user, including only items where is_delivered is false
+        // Retrieve the cart for the user, including only items where is_ordered is false
         $cart = Cart::where('customer_id', $userId)
-            ->where('is_delivered', false)
+            ->where('is_ordered', false)
             ->with('items')
             ->get();
 
@@ -33,10 +32,32 @@ class CartController extends Controller
             ], 404);
         }
 
-        // Return the cart and its filtered items in JSON format
         return response()->json($cart, 200);
     }
 
+    public function cartStoreIndex(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        $cart = Cart::where('store_id', $userId)
+            ->with('items')
+            ->get();
+
+        // Check if the cart exists
+        if (!$cart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart not found'
+            ], 404);
+        }
+
+        return response()->json($cart, 200);
+    }
+
+    public function cartShow($id)
+    {
+        return Cart::with('items')->findOrFail($id);
+    }
 
 
     public function addItem(Request $request)
@@ -51,7 +72,7 @@ class CartController extends Controller
         // Check if there's an existing cart for the customer and store
         $cart = Cart::where('customer_id', $validated['customer_id'])
             ->where('store_id', $validated['store_id'])
-            ->where('is_delivered', false)
+            ->where('is_ordered', false)
             ->first();
 
         // If no active cart exists or the existing cart is delivered, create a new one
@@ -59,7 +80,7 @@ class CartController extends Controller
             $cart = Cart::create([
                 'customer_id' => $validated['customer_id'],
                 'store_id' => $validated['store_id'],
-                'is_delivered' => false,
+                'is_ordered' => false,
             ]);
         }
 
@@ -128,6 +149,20 @@ class CartController extends Controller
         $cartItem->save();
 
         return response()->json($cartItem);
+    }
+
+    public function updateCartStatus($id)
+    {
+        $cart = Cart::findOrFail($id);
+
+        if (!$cart) {
+            return response()->json(['error' => 'Cart not found'], 404);
+        }
+
+        $cart->is_ordered = true;
+        $cart->save();
+
+        return response()->json($cart);
     }
 
     public function removeItem($itemId)

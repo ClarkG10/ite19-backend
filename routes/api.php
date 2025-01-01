@@ -32,6 +32,8 @@ Route::get('/product/all', [ProductController::class, 'index']);
 Route::get('/product/shop/all', [ProductController::class, 'listtAllProducts']);
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/inventory/all', [InventoryController::class, 'index']);
+Route::get('/inventory/{id}', [InventoryController::class, 'show']);
+
 
 // cart api routes
 Route::post('/carts/add', [CartController::class, 'addItem']);
@@ -59,6 +61,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/user/isFrequentShopper/{id}',  'isFrequentShopper')->name('user.isFrequentShopper');
         Route::put('/user/password/{id}',           'password')->name('user.password');
         Route::put('/customer/{id}',                'updateCustomerAccount');
+        Route::put('/delivery-details/{id}',        'updateDeliveryDetails');
         Route::delete('/customer/{id}',             'destroy');
     });
 
@@ -66,7 +69,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/store/inventory',              'storeInventoryIndex');
         Route::get('/inventory/store/all',          'storeInventoryall');
         Route::post('/inventory',                   'store');
-        Route::get('/inventory/{id}',               'show');
         Route::put('/inventory/{id}',               'update');
         Route::put('/inventory/status/{id}',        'updateStatus');
         Route::delete('/inventory/{id}',            'destroy');

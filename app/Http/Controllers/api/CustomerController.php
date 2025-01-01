@@ -74,7 +74,7 @@ class CustomerController extends Controller
         $customer = Customer::findOrFail($id);
 
         if (!$customer) {
-            return response()->json(['error' => 'Inventory not found'], 404);
+            return response()->json(['error' => 'Customer not found'], 404);
         }
 
         $validatedData = $request->validate([
@@ -91,6 +91,25 @@ class CustomerController extends Controller
         return $customer;
     }
 
+    public function updateDeliveryDetails(Request $request, string $id)
+    {
+        $customer = Customer::findOrFail($id);
+
+        if (!$customer) {
+            return response()->json(['error' => 'Customer not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'phone_number' => 'required|integer',
+            'address' => 'required|string',
+        ]);
+
+        $customer->update($validatedData);
+
+        return $customer;
+    }
+
+
     /**
      * Update the specified resource in storage.
      */
@@ -104,7 +123,7 @@ class CustomerController extends Controller
         // Retrieve the validated input data...
         $validated = $request->validated();
 
-        $customer->email =  $validated['is_frequent_shopper'];
+        $customer->is_frequent_shopper =  $validated['is_frequent_shopper'];
 
         $customer->save();
 

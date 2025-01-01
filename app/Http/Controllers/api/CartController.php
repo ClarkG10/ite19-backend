@@ -21,7 +21,9 @@ class CartController extends Controller
         // Retrieve the cart for the user, including only items where is_ordered is false
         $cart = Cart::where('customer_id', $userId)
             ->where('is_ordered', false)
-            ->with('items')
+            ->with(['items' => function ($query) {
+                $query->orderBy('updated_at', 'desc');
+            }])
             ->get();
 
         // Check if the cart exists
@@ -34,13 +36,16 @@ class CartController extends Controller
 
         return response()->json($cart, 200);
     }
+
 
     public function cartStoreIndex(Request $request)
     {
         $userId = $request->user()->id;
 
         $cart = Cart::where('store_id', $userId)
-            ->with('items')
+            ->with(['items' => function ($query) {
+                $query->orderBy('updated_at', 'desc');
+            }])
             ->get();
 
         // Check if the cart exists
@@ -53,6 +58,7 @@ class CartController extends Controller
 
         return response()->json($cart, 200);
     }
+
 
     public function cartShow($id)
     {

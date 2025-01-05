@@ -29,6 +29,16 @@ class Sale extends Model
      */
     protected $fillable = ['quantity', 'price', 'total_amount', 'payment_method', 'store_id', 'customer_id', 'product_id'];
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
     /**
      * The attributes that aren't mass assignable.
      *

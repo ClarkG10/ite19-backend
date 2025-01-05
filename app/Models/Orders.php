@@ -36,12 +36,7 @@ class Orders extends Model
 
     public function cartItems()
     {
-        return $this->hasMany(CartItem::class, 'cart_id');
-    }
-
-    public function store()
-    {
-        return $this->belongsTo(User::class, 'id');
+        return $this->hasMany(CartItem::class);
     }
     /**
      * The attributes that aren't mass assignable.

@@ -31,7 +31,8 @@ class ProductController extends Controller
             $query->where(function ($q) use ($keyword) {
                 $q->where('product_name', 'like', "%{$keyword}%")
                     ->orWhere('product_type', 'like', "%{$keyword}%")
-                    ->orWhere('brand', 'like', "%{$keyword}%");
+                    ->orWhere('brand', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
             });
         }
 

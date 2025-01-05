@@ -41,7 +41,7 @@ class CustomerController extends Controller
 
         // Handle file upload if image_path is provided
         if ($request->hasFile('image_path')) {
-            $validatedData['image_path'] = $request->file('image_path')->store('customer_images', 'public');
+            $validatedData['image_path'] = $request->file('image_path')->store('images/customer_images', 'public');
         }
 
         // Create the customer

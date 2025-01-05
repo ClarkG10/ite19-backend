@@ -27,9 +27,26 @@ class InventoryController extends Controller
         }
 
         $perPage = $request->query('per_page', 10);
+        $keyword = $request->query('keyword');
 
-        $inventory = Inventory::where('store_id', $userId)
-            ->paginate($perPage);
+
+        $query = Inventory::where('store_id', $userId)
+            ->with('product');
+
+        // Apply search filters
+        if ($keyword) {
+            $query->whereHas('product', function ($query) use ($keyword) {
+                $query->where('product_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('brand', 'like', '%' . $keyword . '%')
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('section_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('status', 'like', '%' . $keyword . '%');
+            })->orWhere('quantity', 'like', '%' . $keyword . '%')
+                ->orWhere('new_price', 'like', '%' . $keyword . '%')
+                ->orWhere('order_type', 'like', '%' . $keyword . '%');
+        }
+
+        $inventory = $query->paginate($perPage);
 
         if ($inventory->isEmpty()) {
             return response()->json(['message' => 'No inventory found'], 200);
@@ -37,6 +54,7 @@ class InventoryController extends Controller
 
         return response()->json($inventory);
     }
+
 
     public function storeInventoryall(Request $request)
     {

@@ -36,7 +36,7 @@ class ReorderRequest extends Model
 
     public function store()
     {
-        return $this->belongsTo(User::class, 'store_id'); // Assuming 'User' model represents stores
+        return $this->belongsTo(User::class, 'store_id');
     }
 
     /**

@@ -36,17 +36,27 @@ class SalesController extends Controller
         $userId = $user->id;
         $perPage = $validated['per_page'] ?? 10;
 
-        // Base query with filters
+        // Base query with product relationship
         $saleQuery = Sale::where('store_id', $userId)
+            ->with('product') // Eager load the product relationship
             ->when($request->filled('keyword'), function ($query) use ($request) {
                 $keyword = $request->keyword;
+
                 $query->where(function ($q) use ($keyword) {
-                    $q->where('quantity', 'like', $keyword)
+                    $q->where('quantity', 'like', '%' . $keyword . '%')
                         ->orWhere('payment_method', 'like', '%' . $keyword . '%')
-                        ->orWhere('total_amount', 'like',  $keyword)
-                        ->orWhere('price', 'like',  $keyword);
+                        ->orWhere('total_amount', 'like', '%' . $keyword . '%')
+                        ->orWhere('price', 'like', '%' . $keyword . '%')
+                        ->orWhereHas('product', function ($subQuery) use ($keyword) {
+                            $subQuery->where('product_name', 'like', '%' . $keyword . '%')
+                                ->orWhere('brand', 'like', '%' . $keyword . '%')
+                                ->orWhere('description', 'like', '%' . $keyword . '%')
+                                ->orWhere('section_name', 'like', '%' . $keyword . '%')
+                                ->orWhere('product_type', 'like', '%' . $keyword . '%');
+                        });
                 });
-            })->orderBy('created_at', 'desc');
+            })
+            ->orderBy('created_at', 'desc');
 
         // Paginate the results
         $sales = $saleQuery->paginate($perPage);
@@ -54,6 +64,7 @@ class SalesController extends Controller
         // Return the paginated response
         return response()->json($sales);
     }
+
 
 
     /**

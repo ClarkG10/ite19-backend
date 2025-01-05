@@ -35,19 +35,31 @@ class ReorderRequestController extends Controller
 
         $perPage = $validated['per_page'] ?? 10;
 
-        // Base query
+        // Base query with product and store relationships
         $query = ReorderRequest::where(function ($query) use ($userId) {
             $query->where('vendor_id', $userId)
                 ->orWhere('store_id', $userId);
         })
+            ->with(['product', 'store']) // Eager load product and store relationships
             ->orderBy('created_at', 'desc');
 
         // Apply keyword filter if provided
         if ($request->filled('keyword')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('quantity', 'like',  $request->keyword)
-                    ->orWhere('status', 'like',  $request->keyword)
-                    ->orWhere('order_type', 'like',  $request->keyword);
+            $keyword = $request->keyword;
+
+            $query->where(function ($q) use ($keyword) {
+                $q->where('quantity', 'like', '%' . $keyword . '%')
+                    ->orWhere('status', 'like', '%' . $keyword . '%')
+                    ->orWhere('order_type', 'like', '%' . $keyword . '%')
+                    ->orWhereHas('product', function ($subQuery) use ($keyword) {
+                        $subQuery->where('product_name', 'like', '%' . $keyword . '%')
+                            ->orWhere('brand', 'like', '%' . $keyword . '%')
+                            ->orWhere('description', 'like', '%' . $keyword . '%')
+                            ->orWhere('section_name', 'like', '%' . $keyword . '%');
+                    })
+                    ->orWhereHas('store', function ($subQuery) use ($keyword) {
+                        $subQuery->where('business_name', 'like', '%' . $keyword . '%');
+                    });
             });
         }
 
@@ -62,6 +74,8 @@ class ReorderRequestController extends Controller
         // Return the paginated response
         return response()->json($reorderRequest);
     }
+
+
 
 
     /**

@@ -22,7 +22,7 @@ class CartController extends Controller
         $cart = Cart::where('customer_id', $userId)
             ->where('is_ordered', false)
             ->with(['items' => function ($query) {
-                $query->orderBy('updated_at', 'desc');
+                $query->orderBy('updated_at', 'desc'); //pwede himoon og created_at
             }])
             ->get();
 
@@ -44,7 +44,7 @@ class CartController extends Controller
 
         $cart = Cart::where('store_id', $userId)
             ->with(['items' => function ($query) {
-                $query->orderBy('updated_at', 'desc');
+                $query->orderBy('updated_at', 'desc'); //pwede himoon og created_at
             }])
             ->get();
 

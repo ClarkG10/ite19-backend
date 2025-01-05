@@ -35,20 +35,28 @@ class OrderController extends Controller
 
         $perPage = $validated['per_page'] ?? 10;
 
-        // Base query
+        // Base query with eager loading of the customer relationship
         $query = Orders::where('store_id', $userId)
+            ->with('customer') // Eager load the related customer
             ->orderBy('created_at', 'desc');
 
         // Apply keyword filter if provided
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
+
+            // Apply filtering safely
             $query->where(function ($q) use ($keyword) {
-                $q->where('quantity', 'like',  $keyword)
-                    ->orWhere('status', 'like', '%' . $keyword . '%')
+                $q->where('status', 'like', '%' . $keyword . '%')
                     ->orWhere('payment_method', 'like', '%' . $keyword . '%')
                     ->orWhere('shipping_address', 'like', '%' . $keyword . '%')
-                    ->orWhere('total_amount', 'like', $keyword)
-                    ->orWhere('price', 'like',  $keyword);
+                    ->orWhere('total_amount', 'like', '%' . $keyword . '%')
+                    ->orWhere('shipping_cost', 'like', '%' . $keyword . '%')
+                    ->orWhereHas('customer', function ($subQuery) use ($keyword) {
+                        $subQuery->where('first_name', 'like', '%' . $keyword . '%')
+                            ->orWhere('last_name', 'like', '%' . $keyword . '%')
+                            ->orWhere('email', 'like', '%' . $keyword . '%')
+                            ->orWhere('phone_number', 'like', '%' . $keyword . '%');
+                    });
             });
         }
 
@@ -62,6 +70,10 @@ class OrderController extends Controller
 
         return response()->json($orders);
     }
+
+
+
+
 
     /**
      * Store a newly created resource in storage.
